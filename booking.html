@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameRoom - Premium Booking</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* booking.html specific CSS */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #0a0a0a;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #111;
+      border-bottom: 2px solid #00bfff;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .logo img {
+      height: 50px;
+      filter: drop-shadow(0 0 5px #00bfff);
+    }
+    
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+      transition: color 0.3s, transform 0.3s;
+    }
+    
+    nav ul li a:hover,
+    nav ul li a.active {
+      color: #00bfff;
+      transform: translateY(-3px);
+    }
+    
+    .premium-booking {
+      padding: 80px 20px;
+      text-align: center;
+      position: relative;
+    }
+    
+    h2 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    
+    h2 span {
+      color: #00bfff;
+      text-shadow: 0 0 5px #00bfff, 0 0 10px #00bfff, 0 0 20px #00bfff;
+    }
+    
+    .premium-options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .premium-card {
+      width: 350px;
+      height: 500px;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .premium-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 191, 255, 0.3);
+    }
+    
+    .premium-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      z-index: 1;
+      transition: transform 0.5s ease;
+    }
+    
+    .premium-card:hover .premium-bg {
+      transform: scale(1.05);
+    }
+    
+    .premium-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 30px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+      z-index: 2;
+      color: white;
+      text-align: left;
+    }
+    
+    .premium-content h3 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #00bfff;
+      text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+    }
+    
+    .price {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #00bfff;
+    }
+    
+    .features {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+    
+    .features li {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .features i {
+      margin-right: 10px;
+      color: #00bfff;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .select-btn {
+      width: 100%;
+      padding: 12px;
+      background: rgba(0, 191, 255, 0.2);
+      border: 2px solid #00bfff;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    
+    .select-btn:hover {
+      background: rgba(0, 191, 255, 0.5);
+      transform: scale(1.05);
+    }
+    
+    .neon-text {
+      color: #00bfff;
+      text-shadow: 0 0 5px #00bfff, 0 0 10px #00bfff, 0 0 20px #00bfff;
+    }
+    
+    .neon-line {
+      width: 100%;
+      height: 2px;
+      background: url('assets/neon-line.png') repeat-x;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      animation: moveLine 5s linear infinite;
+    }
+    
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1001;
+    }
+    
+    .modal-overlay.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background-color: #111;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      position: relative;
+      border: 2px solid #00bfff;
+      box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #fff;
+      transition: color 0.3s;
+    }
+    
+    .close-modal:hover {
+      color: #00bfff;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #00bfff;
+      border-radius: 5px;
+      background-color: #111;
+      color: #fff;
+      transition: box-shadow 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      box-shadow: 0 0 10px #00bfff;
+      outline: none;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .form-row .form-group {
+      flex: 1;
+    }
+    
+    .branch-options {
+      display: flex;
+      gap: 20px;
+      margin-top: 10px;
+    }
+    
+    .branch-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #111;
+      border-top: 2px solid #00bfff;
+      margin-top: 50px;
+    }
+    
+    @keyframes moveLine {
+      from { background-position: 0 0; }
+      to { background-position: 100% 0; }
+    }
+    
+    @media (max-width: 768px) {
+      .premium-options {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .premium-card {
+        width: 100%;
+        max-width: 400px;
+      }
+      
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="assets/logo.png" alt="GameRoom Logo">
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="location.html">Location</a></li>
+        <li><a href="booking.html" class="active">Booking</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html">Register</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="premium-booking">
+    <h2 class="neon-text">Choose Your <span>Premium Experience</span></h2>
+    
+    <div class="premium-options">
+      <!-- Open Space Option -->
+      <div class="premium-card" data-option="open-space">
+        <div class="premium-bg" style="background-image: url('assets/open-space.jpg');"></div>
+        <div class="premium-content">
+          <h3>Open Space</h3>
+          <div class="price">25₾/hour</div>
+          <ul class="features">
+            <li><i class="fas fa-users"></i> Group Gaming</li>
+            <li><i class="fas fa-expand"></i> Spacious Area</li>
+            <li><i class="fas fa-tv"></i> Multiple Screens</li>
+          </ul>
+          <button class="btn select-btn">Select</button>
+        </div>
+      </div>
+      
+      <!-- VIP Room Option -->
+      <div class="premium-card" data-option="vip">
+        <div class="premium-bg" style="background-image: url('assets/vip.jpg');"></div>
+        <div class="premium-content">
+          <h3>VIP Room</h3>
+          <div class="price">50₾/hour</div>
+          <ul class="features">
+            <li><i class="fas fa-crown"></i> Exclusive Access</li>
+            <li><i class="fas fa-couch"></i> Luxury Seating</li>
+            <li><i class="fas fa-wine-glass-alt"></i> Refreshments</li>
+          </ul>
+          <button class="btn select-btn">Select</button>
+        </div>
+      </div>
+      
+      <!-- Wheels Option -->
+      <div class="premium-card" data-option="wheels">
+        <div class="premium-bg" style="background-image: url('assets/wheels.jpg');"></div>
+        <div class="premium-content">
+          <h3>Wheels</h3>
+          <div class="price">40₾/hour</div>
+          <ul class="features">
+            <li><i class="fas fa-car"></i> Racing Setup</li>
+            <li><i class="fas fa-tachometer-alt"></i> Force Feedback</li>
+            <li><i class="fas fa-gamepad"></i> Triple Monitor</li>
+          </ul>
+          <button class="btn select-btn">Select</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="neon-line"></div>
+  </section>
+
+  <!-- Booking Modal -->
+  <div class="modal-overlay" id="bookingModal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 class="neon-text">Book <span id="selectedOption"></span></h2>
+      
+      <form id="bookingForm">
+        <div class="form-group">
+          <label for="branch">Select Branch:</label>
+          <div class="branch-options">
+            <label class="branch-option">
+              <input type="radio" name="branch" value="vazha" checked>
+              <span>ვაჟა-ფშაველას გამზ. 19</span>
+            </label>
+            <label class="branch-option">
+              <input type="radio" name="branch" value="petre">
+              <span>პეტრე იბერის ქ. 4</span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" required>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" required>
+          </div>
+          <div class="form-group">
+            <label for="time">Time</label>
+            <input type="time" id="time" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="duration">Duration</label>
+          <select id="duration" required>
+            <option value="" disabled selected>Select duration</option>
+            <option value="1">1 hour</option>
+            <option value="2">2 hours</option>
+            <option value="3">3 hours</option>
+            <option value="4">4+ hours</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="guests">Number of Guests (VIP only)</label>
+          <input type="number" id="guests" min="1" max="10" disabled>
+        </div>
+        
+        <button type="submit" class="btn neon-border">Confirm Booking</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2023 GameRoom. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // booking.html specific JS
+    document.addEventListener('DOMContentLoaded', function() {
+      // Premium option selection
+      const selectButtons = document.querySelectorAll('.select-btn');
+      const bookingModal = document.getElementById('bookingModal');
+      const selectedOptionElement = document.getElementById('selectedOption');
+      const closeModal = document.querySelector('.close-modal');
+      const guestsInput = document.getElementById('guests');
+      
+      selectButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const card = this.closest('.premium-card');
+          const optionName = card.querySelector('h3').textContent;
+          selectedOptionElement.textContent = optionName;
+          
+          // Enable guests input only for VIP
+          if (card.dataset.option === 'vip') {
+            guestsInput.disabled = false;
+            guestsInput.required = true;
+          } else {
+            guestsInput.disabled = true;
+            guestsInput.required = false;
+            guestsInput.value = '';
+          }
+          
+          bookingModal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+      
+      // Close modal
+      closeModal.addEventListener('click', function() {
+        bookingModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      
+      // Close modal when clicking outside
+      bookingModal.addEventListener('click', function(e) {
+        if (e.target === bookingModal) {
+          bookingModal.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        }
+      });
+      
+      // Form submission
+      document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = {
+          option: selectedOptionElement.textContent,
+          branch: document.querySelector('input[name="branch"]:checked').nextElementSibling.textContent,
+          name: document.getElementById('name').value,
+          phone: document.getElementById('phone').value,
+          date: document.getElementById('date').value,
+          time: document.getElementById('time').value,
+          duration: document.getElementById('duration').value,
+          guests: document.getElementById('guests').value || '1'
+        };
+        
+        console.log('Premium booking submitted:', formData);
+        
+        // Calculate price
+        let price = 0;
+        switch(selectedOptionElement.textContent) {
+          case 'Open Space': price = 25 * formData.duration; break;
+          case 'VIP Room': price = 50 * formData.duration; break;
+          case 'Wheels': price = 40 * formData.duration; break;
+        }
+        
+        // Show confirmation
+        alert(`Thank you for booking ${formData.option} at ${formData.branch}!\n\nDate: ${formData.date}\nTime: ${formData.time}\nDuration: ${formData.duration} hours\nTotal: ${price}₾\n\nWe'll contact you to confirm.`);
+        
+        // Reset and close
+        this.reset();
+        bookingModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+      
+      // Add smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+      
+      // Button hover effects
+      const buttons = document.querySelectorAll('.btn');
+      buttons.forEach(button => {
+        button.addEventListener('mouseenter', () => {
+          button.style.transform = 'scale(1.05)';
+        });
+        button.addEventListener('mouseleave', () => {
+          button.style.transform = 'scale(1)';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameRoom - Register</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Base Styles */
+    :root {
+      --primary: #00bfff;
+      --primary-dark: #009acd;
+      --primary-light: rgba(0, 191, 255, 0.1);
+      --dark: #0a0a0a;
+      --dark-light: #111;
+      --dark-lighter: #222;
+      --light: #fff;
+      --gray: #777;
+      --danger: #ff3860;
+      --success: #09c372;
+      --warning: #ff9900;
+      --border-radius: 8px;
+      --transition: all 0.3s ease;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --neon-glow: 0 0 5px var(--primary), 0 0 10px var(--primary), 0 0 20px var(--primary);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--dark);
+      color: var(--light);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    
+    /* Header Styles */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background-color: var(--dark-light);
+      border-bottom: 2px solid var(--primary);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+    }
+    
+    .logo img {
+      height: 50px;
+      filter: drop-shadow(0 0 5px var(--primary));
+      transition: var(--transition);
+    }
+    
+    .logo img:hover {
+      transform: scale(1.05);
+    }
+    
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+    
+    nav ul li a {
+      text-decoration: none;
+      color: var(--light);
+      font-weight: 600;
+      font-size: 1rem;
+      transition: var(--transition);
+      position: relative;
+      padding: 0.5rem 0;
+    }
+    
+    nav ul li a:hover,
+    nav ul li a.active {
+      color: var(--primary);
+    }
+    
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--primary);
+      transition: var(--transition);
+    }
+    
+    nav ul li a:hover::after,
+    nav ul li a.active::after {
+      width: 100%;
+    }
+    
+    /* Main Content Styles */
+    .auth-section {
+      min-height: calc(100vh - 200px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+      position: relative;
+      background: radial-gradient(circle at center, var(--dark-light) 0%, var(--dark) 100%);
+    }
+    
+    .auth-container {
+      background-color: rgba(17, 17, 17, 0.95);
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 0 30px rgba(0, 191, 255, 0.2);
+      border: 1px solid var(--primary);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .auth-container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      z-index: -1;
+      background: linear-gradient(45deg, 
+        var(--primary), 
+        #00bfff, 
+        #0080ff, 
+        var(--primary));
+      background-size: 400%;
+      border-radius: var(--border-radius);
+      opacity: 0.3;
+      animation: glowing-border 20s linear infinite;
+    }
+    
+    @keyframes glowing-border {
+      0% { background-position: 0 0; }
+      50% { background-position: 400% 0; }
+      100% { background-position: 0 0; }
+    }
+    
+    .auth-container h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      color: var(--primary);
+      text-shadow: var(--neon-glow);
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+    
+    .auth-container h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px;
+    }
+    
+    .auth-container h2 span {
+      color: var(--light);
+      text-shadow: none;
+    }
+    
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      color: var(--light);
+      font-size: 0.95rem;
+    }
+    
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      border: 1px solid var(--dark-lighter);
+      border-radius: var(--border-radius);
+      background-color: var(--dark-light);
+      color: var(--light);
+      font-size: 1rem;
+      transition: var(--transition);
+      outline: none;
+    }
+    
+    .form-group input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+    
+    .form-group input::placeholder {
+      color: var(--gray);
+      opacity: 0.7;
+    }
+    
+    /* Password Input Styles */
+    .password-input {
+      position: relative;
+    }
+    
+    .password-input input {
+      padding-right: 3rem;
+    }
+    
+    .toggle-password {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--gray);
+      transition: var(--transition);
+    }
+    
+    .toggle-password:hover {
+      color: var(--primary);
+    }
+    
+    /* Password Strength Styles */
+    .password-strength {
+      margin-top: 0.75rem;
+    }
+    
+    .strength-meter {
+      height: 6px;
+      background-color: var(--dark-lighter);
+      border-radius: 3px;
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+    }
+    
+    .strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: var(--transition);
+      border-radius: 3px;
+    }
+    
+    .strength-text {
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    /* Form Layout */
+    .form-row {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-row .form-group {
+      flex: 1;
+      margin-bottom: 0;
+    }
+    
+    /* Terms Checkbox */
+    .terms-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    
+    .terms-checkbox input {
+      width: auto;
+      margin: 0;
+    }
+    
+    .terms-checkbox span {
+      font-size: 0.9rem;
+      color: var(--light);
+    }
+    
+    .terms-checkbox a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .terms-checkbox a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Button Styles */
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      background-color: var(--primary);
+      color: var(--light);
+      border: none;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: var(--shadow);
+    }
+    
+    .btn:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Payment Section Styles */
+    .payment-section {
+      margin: 2.5rem 0;
+      padding: 1.5rem;
+      border: 1px solid var(--primary);
+      border-radius: var(--border-radius);
+      background-color: rgba(0, 191, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .payment-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    }
+    
+    .payment-section h3 {
+      margin-bottom: 1.5rem;
+      font-size: 1.3rem;
+      color: var(--primary);
+      text-shadow: var(--neon-glow);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .payment-section h3::before,
+    .payment-section h3::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    }
+    
+    .card-icons {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    
+    .card-icons i {
+      font-size: 1.5rem;
+      color: var(--gray);
+      transition: var(--transition);
+    }
+    
+    .card-icons i:hover {
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+    
+    /* Card Input Styling */
+    input[type="text"][id^="card-"] {
+      letter-spacing: 1px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    /* Footer Styles */
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .auth-footer p {
+      color: var(--gray);
+    }
+    
+    .auth-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Main Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background-color: var(--dark-light);
+      border-top: 1px solid var(--primary);
+    }
+    
+    footer p {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+      }
+      
+      nav ul {
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .auth-container {
+        padding: 1.5rem;
+      }
+      
+      .form-row {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      
+      .payment-section {
+        padding: 1.25rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .auth-container {
+        padding: 1.25rem;
+      }
+      
+      .auth-container h2 {
+        font-size: 1.75rem;
+      }
+      
+      .form-group input {
+        padding: 0.75rem 1rem;
+      }
+    }
+    
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    /* Utility Classes */
+    .text-center {
+      text-align: center;
+    }
+    
+    .mt-1 { margin-top: 0.5rem; }
+    .mt-2 { margin-top: 1rem; }
+    .mt-3 { margin-top: 1.5rem; }
+    .mt-4 { margin-top: 2rem; }
+    
+    .mb-1 { margin-bottom: 0.5rem; }
+    .mb-2 { margin-bottom: 1rem; }
+    .mb-3 { margin-bottom: 1.5rem; }
+    .mb-4 { margin-bottom: 2rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="assets/logo.png" alt="GameRoom Logo">
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="location.html">Location</a></li>
+        <li><a href="booking.html">Booking</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html" class="active">Register</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="auth-section">
+    <div class="auth-container">
+      <h2>Create <span>Account</span></h2>
+      
+      <form id="registerForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="register-fname">First Name</label>
+            <input type="text" id="register-fname" placeholder="Enter your first name" required>
+          </div>
+          <div class="form-group">
+            <label for="register-lname">Last Name</label>
+            <input type="text" id="register-lname" placeholder="Enter your last name" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="register-email">Email Address</label>
+          <input type="email" id="register-email" placeholder="Enter your email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="register-password">Password</label>
+          <div class="password-input">
+            <input type="password" id="register-password" placeholder="Create a password" required>
+            <i class="fas fa-eye toggle-password"></i>
+          </div>
+          <div class="password-strength">
+            <div class="strength-meter">
+              <div class="strength-bar"></div>
+            </div>
+            <span class="strength-text">Password strength: weak</span>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="register-confirm">Confirm Password</label>
+          <div class="password-input">
+            <input type="password" id="register-confirm" placeholder="Confirm your password" required>
+            <i class="fas fa-eye toggle-password"></i>
+          </div>
+        </div>
+
+        <!-- Payment Section -->
+        <div class="payment-section">
+          <h3>Payment <span>Information</span></h3>
+          
+          <div class="form-group">
+            <label for="card-name">Name on Card</label>
+            <input type="text" id="card-name" placeholder="Full name as shown on card" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="card-number">Card Number</label>
+            <input type="text" id="card-number" maxlength="19" inputmode="numeric" placeholder="1234 5678 9012 3456" required>
+            <div class="card-icons">
+              <i class="fab fa-cc-visa" title="Visa"></i>
+              <i class="fab fa-cc-mastercard" title="Mastercard"></i>
+              <i class="fab fa-cc-amex" title="American Express"></i>
+              <i class="fab fa-cc-discover" title="Discover"></i>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="card-expiry">Expiry Date</label>
+              <input type="text" id="card-expiry" maxlength="5" placeholder="MM/YY" required>
+            </div>
+            <div class="form-group">
+              <label for="card-cvc">CVC</label>
+              <input type="text" id="card-cvc" maxlength="4" inputmode="numeric" placeholder="123" required>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="terms-checkbox">
+            <input type="checkbox" id="agree-terms" required>
+            <span>I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></span>
+          </label>
+        </div>
+        
+        <button type="submit" class="btn">Create Account</button>
+        
+        <div class="auth-footer">
+          <p>Already have an account? <a href="login.html">Sign in here</a></p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2023 GameRoom. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Password toggle functionality
+      document.querySelectorAll('.toggle-password').forEach(icon => {
+        icon.addEventListener('click', function() {
+          const input = this.previousElementSibling;
+          const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+          input.setAttribute('type', type);
+          this.classList.toggle('fa-eye-slash');
+          
+          // Add animation
+          this.style.transform = 'scale(1.2)';
+          setTimeout(() => {
+            this.style.transform = 'scale(1)';
+          }, 200);
+        });
+      });
+      
+      // Password strength indicator
+      const passwordInput = document.getElementById('register-password');
+      if (passwordInput) {
+        passwordInput.addEventListener('input', function() {
+          const password = this.value;
+          const strengthBar = document.querySelector('.strength-bar');
+          const strengthText = document.querySelector('.strength-text');
+          
+          // Calculate password strength score (0-100)
+          let score = 0;
+          
+          // Length (max 30 points)
+          score += Math.min(30, (password.length * 2.5));
+          
+          // Contains lowercase (10 points)
+          if (/[a-z]/.test(password)) score += 10;
+          
+          // Contains uppercase (10 points)
+          if (/[A-Z]/.test(password)) score += 10;
+          
+          // Contains numbers (10 points)
+          if (/[0-9]/.test(password)) score += 10;
+          
+          // Contains special chars (10 points)
+          if (/[^a-zA-Z0-9]/.test(password)) score += 10;
+          
+          // Deduct for weak patterns (like all same chars)
+          if (/^(.)\1+$/.test(password)) score = Math.max(0, score - 30);
+          
+          // Cap at 100
+          score = Math.min(100, score);
+          
+          // Determine strength level
+          let strength = '';
+          let color = '';
+          
+          if (score === 0) {
+            strength = 'None';
+            color = '#777';
+          } else if (score < 40) {
+            strength = 'Weak';
+            color = '#ff3860';
+          } else if (score < 70) {
+            strength = 'Medium';
+            color = '#ff9900';
+          } else if (score < 90) {
+            strength = 'Strong';
+            color = '#33cc33';
+          } else {
+            strength = 'Very Strong';
+            color = '#09c372';
+          }
+          
+          // Update UI
+          strengthBar.style.width = `${score}%`;
+          strengthBar.style.backgroundColor = color;
+          strengthText.textContent = `Password strength: ${strength}`;
+          strengthText.style.color = color;
+        });
+      }
+      
+      // Credit Card Number Handling
+      const cardNumberInput = document.getElementById('card-number');
+      if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function(e) {
+          // Only allow numbers and automatically add spaces
+          let value = this.value.replace(/\D/g, '');
+          if (value.length > 16) value = value.substr(0, 16);
+          
+          // Add space after every 4 digits
+          value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+          this.value = value;
+          
+          // Update card icons
+          const firstDigit = value.charAt(0);
+          const cardIcons = document.querySelectorAll('.card-icons i');
+          
+          cardIcons.forEach(icon => {
+            icon.style.color = '#777';
+            icon.style.transform = 'scale(1)';
+          });
+          
+          if (firstDigit === '4') {
+            document.querySelector('.fa-cc-visa').style.color = '#00bfff';
+            document.querySelector('.fa-cc-visa').style.transform = 'scale(1.2)';
+          } else if (firstDigit === '5') {
+            document.querySelector('.fa-cc-mastercard').style.color = '#00bfff';
+            document.querySelector('.fa-cc-mastercard').style.transform = 'scale(1.2)';
+          } else if (firstDigit === '3') {
+            document.querySelector('.fa-cc-amex').style.color = '#00bfff';
+            document.querySelector('.fa-cc-amex').style.transform = 'scale(1.2)';
+          } else if (firstDigit === '6') {
+            document.querySelector('.fa-cc-discover').style.color = '#00bfff';
+            document.querySelector('.fa-cc-discover').style.transform = 'scale(1.2)';
+          }
+        });
+
+        // Prevent non-numeric input
+        cardNumberInput.addEventListener('keydown', function(e) {
+          if (!/[0-9\s]/.test(e.key) && 
+              !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
+            e.preventDefault();
+          }
+        });
+      }
+      
+      // Expiry Date Handling
+      const expiryInput = document.getElementById('card-expiry');
+      const cvcInput = document.getElementById('card-cvc');
+      
+      if (expiryInput) {
+        expiryInput.addEventListener('input', function(e) {
+          // Only allow numbers and automatically add slash
+          let value = this.value.replace(/\D/g, '');
+          if (value.length > 2) {
+            value = value.substr(0, 2) + '/' + value.substr(2, 2);
+          }
+          this.value = value;
+          
+          // Auto-focus to CVC when date is complete
+          if (this.value.length === 5) {
+            cvcInput.focus();
+          }
+        });
+
+        // Prevent non-numeric input
+        expiryInput.addEventListener('keydown', function(e) {
+          if (!/[0-9]/.test(e.key) && 
+              !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
+            e.preventDefault();
+          }
+        });
+      }
+      
+      // CVC Input Handling
+      if (cvcInput) {
+        // Only allow numbers
+        cvcInput.addEventListener('input', function(e) {
+          this.value = this.value.replace(/\D/g, '').substr(0, 4);
+        });
+
+        // Prevent non-numeric input
+        cvcInput.addEventListener('keydown', function(e) {
+          if (!/[0-9]/.test(e.key) && 
+              !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)) {
+            e.preventDefault();
+          }
+        });
+      }
+      
+      // Form submission
+      document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Validate passwords match
+        const password = document.getElementById('register-password').value;
+        const confirmPassword = document.getElementById('register-confirm').value;
+        
+        if (password !== confirmPassword) {
+          alert('Passwords do not match!');
+          document.getElementById('register-confirm').focus();
+          return;
+        }
+        
+        // Validate password strength
+        const strengthText = document.querySelector('.strength-text').textContent;
+        if (strengthText.includes('Weak') || strengthText.includes('None')) {
+          if (!confirm('Your password is weak. Are you sure you want to continue?')) {
+            document.getElementById('register-password').focus();
+            return;
+          }
+        }
+        
+        // Validate card number (remove spaces first)
+        const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+        if (cardNumber.length < 13 || cardNumber.length > 16) {
+          alert('Please enter a valid card number (13-16 digits)');
+          document.getElementById('card-number').focus();
+          return;
+        }
+        
+        // Validate expiry date
+        const expiryDate = document.getElementById('card-expiry').value;
+        if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+          alert('Please enter a valid expiry date (MM/YY)');
+          document.getElementById('card-expiry').focus();
+          return;
+        }
+        
+        // Validate CVC
+        const cvc = document.getElementById('card-cvc').value;
+        if (cvc.length < 3 || cvc.length > 4) {
+          alert('Please enter a valid CVC (3-4 digits)');
+          document.getElementById('card-cvc').focus();
+          return;
+        }
+        
+        // Validate terms checkbox
+        if (!document.getElementById('agree-terms').checked) {
+          alert('You must agree to the Terms of Service and Privacy Policy');
+          return;
+        }
+        
+        // Here you would typically send the data to a server
+        console.log('Registration submitted:', {
+          firstName: document.getElementById('register-fname').value,
+          lastName: document.getElementById('register-lname').value,
+          email: document.getElementById('register-email').value,
+          card: {
+            number: cardNumber,
+            expiry: expiryDate,
+            cvc: cvc
+          }
+        });
+        
+        // Show success animation
+        const btn = document.querySelector('.btn');
+        btn.textContent = '✓ Registration Successful!';
+        btn.style.backgroundColor = 'var(--success)';
+        
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 1500);
+      });
+      
+      // Add input focus effects
+      document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.style.transform = 'translateY(-2px)';
+        });
+        
+        input.addEventListener('blur', function() {
+          this.parentElement.style.transform = 'translateY(0)';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

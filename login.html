@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameRoom - Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* login.html specific CSS */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #0a0a0a;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #111;
+      border-bottom: 2px solid #00bfff;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .logo img {
+      height: 50px;
+      filter: drop-shadow(0 0 5px #00bfff);
+    }
+    
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+      transition: color 0.3s, transform 0.3s;
+    }
+    
+    nav ul li a:hover,
+    nav ul li a.active {
+      color: #00bfff;
+      transform: translateY(-3px);
+    }
+    
+    .auth-section {
+      min-height: calc(100vh - 200px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 20px;
+      position: relative;
+    }
+    
+    .auth-container {
+      background-color: rgba(17, 17, 17, 0.9);
+      padding: 40px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+      border: 1px solid #00bfff;
+    }
+    
+    .auth-container h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #00bfff;
+      border-radius: 5px;
+      background-color: #111;
+      color: #fff;
+      transition: box-shadow 0.3s;
+    }
+    
+    .form-group input:focus {
+      box-shadow: 0 0 10px #00bfff;
+      outline: none;
+    }
+    
+    .password-input {
+      position: relative;
+    }
+    
+    .password-input input {
+      padding-right: 40px;
+    }
+    
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #00bfff;
+    }
+    
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .forgot-password {
+      color: #00bfff;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #00bfff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn:hover {
+      background-color: #009acd;
+      transform: scale(1.02);
+    }
+    
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .auth-footer p {
+      color: #777;
+    }
+    
+    .auth-footer a {
+      color: #00bfff;
+      text-decoration: none;
+    }
+    
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+    
+    .neon-text {
+      color: #00bfff;
+      text-shadow: 0 0 5px #00bfff, 0 0 10px #00bfff, 0 0 20px #00bfff;
+    }
+    
+    .neon-border {
+      border: 2px solid #00bfff;
+      box-shadow: 0 0 5px #00bfff, 0 0 10px #00bfff, 0 0 20px #00bfff;
+    }
+    
+    .neon-line {
+      width: 100%;
+      height: 2px;
+      background: url('assets/neon-line.png') repeat-x;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      animation: moveLine 5s linear infinite;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #111;
+      border-top: 2px solid #00bfff;
+    }
+    
+    @keyframes moveLine {
+      from { background-position: 0 0; }
+      to { background-position: 100% 0; }
+    }
+    
+    @media (max-width: 768px) {
+      .auth-container {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="assets/logo.png" alt="GameRoom Logo">
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="location.html">Location</a></li>
+        <li><a href="booking.html">Booking</a></li>
+        <li><a href="login.html" class="active">Login</a></li>
+        <li><a href="register.html">Register</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="auth-section">
+    <div class="auth-container">
+      <h2 class="neon-text">Login to <span>GameRoom</span></h2>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <div class="password-input">
+            <input type="password" id="login-password" required>
+            <i class="fas fa-eye toggle-password"></i>
+          </div>
+        </div>
+        
+        <div class="form-options">
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+        
+        <button type="submit" class="btn neon-border">Login</button>
+        
+        <div class="auth-footer">
+          <p>Don't have an account? <a href="register.html">Register here</a></p>
+        </div>
+      </form>
+    </div>
+    <div class="neon-line"></div>
+  </section>
+
+  <footer>
+    <p>&copy; 2023 GameRoom. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // login.html specific JS
+    document.addEventListener('DOMContentLoaded', function() {
+      // Password toggle functionality
+      document.querySelectorAll('.toggle-password').forEach(icon => {
+        icon.addEventListener('click', function() {
+          const input = this.previousElementSibling;
+          const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+          input.setAttribute('type', type);
+          this.classList.toggle('fa-eye-slash');
+        });
+      });
+      
+      // Form submission handling
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        
+        // Here you would typically send the data to a server
+        console.log('Login submitted:', { email, password });
+        
+        // For demo purposes, we'll just show an alert
+        alert('Login successful! Redirecting to your account...');
+        
+        // In a real app, you would redirect after successful login
+        // window.location.href = 'account.html';
+      });
+      
+      // Add smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameRoom - Our Locations</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+  <style>
+    /* locations.html specific CSS */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #0a0a0a;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #111;
+      border-bottom: 2px solid #00bfff;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .logo img {
+      height: 50px;
+      filter: drop-shadow(0 0 5px #00bfff);
+    }
+    
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+    
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+      transition: color 0.3s, transform 0.3s;
+    }
+    
+    nav ul li a:hover,
+    nav ul li a.active {
+      color: #00bfff;
+      transform: translateY(-3px);
+    }
+    
+    .locations-hero {
+      text-align: center;
+      padding: 80px 20px 40px;
+      position: relative;
+      background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('assets/locations-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .locations-hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      animation: fadeInDown 1s ease-out;
+    }
+    
+    .locations-hero p {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto 30px;
+      animation: fadeIn 1.5s ease-out;
+    }
+    
+    .search-container {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      position: relative;
+      animation: fadeInUp 1s ease-out;
+    }
+    
+    .search-container input {
+      width: 100%;
+      padding: 15px 20px;
+      border-radius: 50px;
+      border: 2px solid #00bfff;
+      background-color: rgba(17, 17, 17, 0.8);
+      color: #fff;
+      font-size: 1rem;
+      box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
+      transition: all 0.3s;
+    }
+    
+    .search-container input:focus {
+      outline: none;
+      box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+    }
+    
+    .search-container i {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #00bfff;
+      cursor: pointer;
+    }
+    
+    .locations-container {
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .locations-list {
+      flex: 1;
+      padding-right: 30px;
+    }
+    
+    .location-card {
+      background-color: #111;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s;
+      cursor: pointer;
+      border-left: 4px solid #00bfff;
+    }
+    
+    .location-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 191, 255, 0.3);
+    }
+    
+    .location-card.active {
+      border-left: 4px solid #ff00ff;
+      box-shadow: 0 10px 25px rgba(255, 0, 255, 0.3);
+    }
+    
+    .location-card-header {
+      padding: 20px;
+      background-color: rgba(0, 191, 255, 0.1);
+      border-bottom: 1px solid rgba(0, 191, 255, 0.2);
+    }
+    
+    .location-card-header h3 {
+      margin: 0;
+      color: #00bfff;
+      font-size: 1.5rem;
+    }
+    
+    .location-card-body {
+      padding: 20px;
+    }
+    
+    .location-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .location-info i {
+      width: 25px;
+      color: #00bfff;
+      margin-right: 10px;
+      text-align: center;
+    }
+    
+    .location-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .feature-tag {
+      background-color: rgba(0, 191, 255, 0.2);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #00bfff;
+    }
+    
+    .map-container {
+      flex: 2;
+      height: 600px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
+      position: relative;
+    }
+    
+    #map {
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+      border-radius: 10px;
+    }
+    
+    .map-overlay {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: rgba(17, 17, 17, 0.9);
+      padding: 10px;
+      border-radius: 5px;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .map-overlay button {
+      background-color: #00bfff;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      margin: 0 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .map-overlay button:hover {
+      background-color: #009acd;
+    }
+    
+    .neon-text {
+      color: #00bfff;
+      text-shadow: 0 0 5px #00bfff, 0 0 10px #00bfff, 0 0 20px #00bfff;
+    }
+    
+    .neon-line {
+      width: 100%;
+      height: 2px;
+      background: url('assets/neon-line.png') repeat-x;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      animation: moveLine 5s linear infinite;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #111;
+      border-top: 2px solid #00bfff;
+    }
+    
+    .directions-btn {
+      width: 100%;
+      margin-top: 15px;
+      padding: 8px;
+      background-color: rgba(0, 191, 255, 0.2);
+      border: 1px solid #00bfff;
+      color: #00bfff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .directions-btn:hover {
+      background-color: rgba(0, 191, 255, 0.4);
+    }
+    
+    .directions-btn i {
+      margin-right: 8px;
+    }
+    
+    /* Custom styles for Leaflet popups */
+    .leaflet-popup-content-wrapper {
+      background-color: rgba(17, 17, 17, 0.95);
+      color: white;
+      border-radius: 10px;
+      border: 1px solid #00bfff;
+      box-shadow: 0 0 15px rgba(0, 191, 255, 0.4);
+    }
+    
+    .leaflet-popup-content {
+      margin: 15px;
+    }
+    
+    .leaflet-popup-tip {
+      background-color: #00bfff;
+    }
+    
+    .location-popup h3 {
+      color: #00bfff;
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    
+    .location-popup p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    
+    .location-popup-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    
+    .location-popup-feature {
+      background-color: rgba(0, 191, 255, 0.3);
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+    
+    .popup-directions {
+      display: inline-block;
+      background-color: #00bfff;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      margin-top: 10px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    
+    .popup-directions:hover {
+      background-color: #009acd;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes moveLine {
+      from { background-position: 0 0; }
+      to { background-position: 100% 0; }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .locations-container {
+        flex-direction: column;
+      }
+      
+      .locations-list {
+        padding-right: 0;
+        margin-bottom: 30px;
+      }
+      
+      .map-container {
+        height: 400px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .locations-hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      nav ul {
+        gap: 15px;
+      }
+      
+      .location-card {
+        margin-bottom: 15px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="assets/logo.png" alt="GameRoom Logo">
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="locations.html" class="active">Locations</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="booking.html">Booking</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html">Register</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="locations-hero">
+    <h1 class="neon-text">Our <span>Locations</span></h1>
+    <p>Find the nearest GameRoom experience with our state-of-the-art gaming lounges across the city. Each location offers unique features and premium gaming setups.</p>
+    <div class="search-container">
+      <input type="text" placeholder="Search locations by area or features..." id="locationSearch">
+      <i class="fas fa-search"></i>
+    </div>
+    <div class="neon-line"></div>
+  </section>
+
+  <div class="locations-container">
+    <div class="locations-list" id="locationsList">
+      <!-- Location cards will be added dynamically by JavaScript -->
+    </div>
+    
+    <div class="map-container">
+      <div id="map"></div>
+      <div class="map-overlay">
+        <button id="locateMe"><i class="fas fa-location-arrow"></i> Locate Me</button>
+        <button id="viewAll"><i class="fas fa-globe"></i> View All</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2023 GameRoom. All rights reserved.</p>
+  </footer>
+
+  <!-- Load Leaflet.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Game locations data
+      const locations = [
+        {
+          id: 1,
+          name: "Guru Game - Vazha Pshavela",
+          address: "Vazha-Pshavela Ave, Tbilisi, Georgia",
+          phone: "+995 555 123 456",
+          hours: "10:00 AM - 2:00 AM",
+          features: ["Premium Gaming", "VR Zone", "Esports Arena", "Snack Bar"],
+          lat: 41.7273937,
+          lng: 44.7623962
+        },
+        {
+          id: 2,
+          name: "GameRoom Center - Rustaveli",
+          address: "Rustaveli Ave 24, Tbilisi, Georgia",
+          phone: "+995 555 987 654",
+          hours: "9:00 AM - 12:00 AM",
+          features: ["VIP Lounges", "Racing Simulators", "Tournaments", "Full Bar"],
+          lat: 41.7036,
+          lng: 44.7925
+        }
+      ];
+
+      // Initialize the Leaflet map
+      const map = L.map('map').setView([41.7273937, 44.7623962], 13);
+      
+      // Add a dark themed map layer
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(map);
+
+      // Create a bounds object to fit all markers
+      const bounds = L.latLngBounds();
+      const markers = [];
+      
+      // Custom marker icon
+      const gameIcon = L.icon({
+        iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/images/marker-icon.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/images/marker-shadow.png',
+        shadowSize: [41, 41]
+      });
+      
+      // Add markers for each location
+      locations.forEach(location => {
+        const position = [location.lat, location.lng];
+        bounds.extend(position);
+        
+        // Create popup content
+        const popupContent = `
+          <div class="location-popup">
+            <h3>${location.name}</h3>
+            <p><i class="fas fa-map-marker-alt"></i> ${location.address}</p>
+            <p><i class="fas fa-phone"></i> ${location.phone}</p>
+            <p><i class="fas fa-clock"></i> ${location.hours}</p>
+            <div class="location-popup-features">
+              ${location.features.map(feature => 
+                `<span class="location-popup-feature">${feature}</span>`
+              ).join('')}
+            </div>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${location.lat},${location.lng}" 
+               target="_blank" class="popup-directions">
+              <i class="fas fa-directions"></i> Get Directions
+            </a>
+          </div>
+        `;
+        
+        // Create marker and add to map
+        const marker = L.marker(position, { icon: gameIcon })
+          .addTo(map)
+          .bindPopup(popupContent);
+        
+        marker.on('click', function() {
+          highlightLocationCard(location.id);
+        });
+        
+        markers.push({ marker, id: location.id });
+      });
+      
+      // Fit map to all markers
+      if (locations.length > 1) {
+        map.fitBounds(bounds, { padding: [50, 50] });
+      }
+      
+      // Render location cards
+      function renderLocationCards() {
+        const locationsList = document.getElementById('locationsList');
+        locationsList.innerHTML = '';
+        
+        locations.forEach(location => {
+          const card = document.createElement('div');
+          card.className = 'location-card';
+          card.dataset.id = location.id;
+          card.innerHTML = `
+            <div class="location-card-header">
+              <h3>${location.name}</h3>
+            </div>
+            <div class="location-card-body">
+              <div class="location-info">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>${location.address}</span>
+              </div>
+              <div class="location-info">
+                <i class="fas fa-phone"></i>
+                <span>${location.phone}</span>
+              </div>
+              <div class="location-info">
+                <i class="fas fa-clock"></i>
+                <span>${location.hours}</span>
+              </div>
+              <div class="location-features">
+                ${location.features.map(feature => 
+                  `<span class="feature-tag">${feature}</span>`
+                ).join('')}
+              </div>
+              <button class="directions-btn" data-lat="${location.lat}" data-lng="${location.lng}">
+                <i class="fas fa-directions"></i> Get Directions
+              </button>
+            </div>
+          `;
+          
+          card.addEventListener('click', () => {
+            const locationData = locations.find(l => l.id === location.id);
+            if (locationData) {
+              map.setView([locationData.lat, locationData.lng], 16);
+              
+              // Find and open the marker popup
+              const markerObj = markers.find(m => m.id === location.id);
+              if (markerObj) {
+                markerObj.marker.openPopup();
+              }
+              
+              highlightLocationCard(location.id);
+            }
+          });
+          
+          locationsList.appendChild(card);
+        });
+
+        // Add event listeners to direction buttons
+        document.querySelectorAll('.directions-btn').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const lat = this.getAttribute('data-lat');
+            const lng = this.getAttribute('data-lng');
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+          });
+        });
+      }
+      
+      // Highlight selected location card
+      function highlightLocationCard(id) {
+        document.querySelectorAll('.location-card').forEach(card => {
+          card.classList.remove('active');
+          if (parseInt(card.dataset.id) === id) {
+            card.classList.add('active');
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+      }
+      
+      // Search functionality
+      document.getElementById('locationSearch').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        document.querySelectorAll('.location-card').forEach(card => {
+          const cardText = card.textContent.toLowerCase();
+          card.style.display = cardText.includes(searchTerm) ? 'block' : 'none';
+        });
+      });
+      
+      // Locate me button
+      document.getElementById('locateMe').addEventListener('click', function() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(position => {
+            const userLocation = [position.coords.latitude, position.coords.longitude];
+            
+            // Add user marker
+            const userMarker = L.marker(userLocation, {
+              icon: L.icon({
+                iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/images/marker-icon-red.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/images/marker-shadow.png',
+                shadowSize: [41, 41]
+              })
+            }).addTo(map);
+            
+            // Add user marker popup
+            userMarker.bindPopup("<b>You are here</b>").openPopup();
+            
+            // Center map on user location
+            map.setView(userLocation, 14);
+            
+            // Remove user marker after 5 seconds
+            setTimeout(() => {
+              map.removeLayer(userMarker);
+            }, 5000);
+          }, () => {
+            alert("Could not get your location. Please ensure location services are enabled.");
+          });
+        } else {
+          alert("Geolocation is not supported by this browser.");
+        }
+      });
+      
+      // View all locations button
+      document.getElementById('viewAll').addEventListener('click', function() {
+        if (locations.length > 1) {
+          map.fitBounds(bounds, { padding: [50, 50] });
+        } else {
+          map.setView([locations[0].lat, locations[0].lng], 16);
+        }
+        
+        // Close all popups
+        markers.forEach(markerObj => {
+          markerObj.marker.closePopup();
+        });
+        
+        // Remove highlights from location cards
+        document.querySelectorAll('.location-card').forEach(card => {
+          card.classList.remove('active');
+        });
+      });
+      
+      // Initialize the page
+      renderLocationCards();
+    });
+    
+    // Add smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
